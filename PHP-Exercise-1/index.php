@@ -1,7 +1,26 @@
+<?php
+session_start();
+
+// Nếu session chưa được khởi tạo, khởi tạo mảng người dùng trống
+if (!isset($_SESSION['users'])) {
+    $_SESSION['users'] = [];
+}
+
+// Xử lý xóa người dùng
+if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+    $_SESSION['users'] = array_filter($_SESSION['users'], function ($user) use ($id) {
+        return $user['user_id'] != $id;
+    });
+    header('Location: index.php');
+    exit;
+}
+?>
+
 <?php include('layouts/header.php'); ?>
 
 <h1 class="text-center">User Management</h1>
-<a href="./create.php" class="btn btn-success">Create New User</a>
+<a href="create.php" class="btn btn-success">Create New User</a>
 
 <table class="table">
     <thead>
@@ -16,19 +35,24 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>Liam</td>
-            <td>dobachinh04@gmail.com</td>
-            <td>Hanoi</td>
-            <td>0373860302</td>
-            <td>Male</td>
-            <td>
-                <a href="" class="btn btn-primary">Detail</a>
-                <a href="" class="btn btn-warning">Update</a>
-                <a href="" class="btn btn-danger" onclick="return confirm('Bạn có chắc là muốn xóa không?')">Delete</a>
-            </td>
-        </tr>
+        <?php foreach ($_SESSION['users'] as $user): ?>
+            <tr>
+                <th scope="row"><?php echo htmlspecialchars($user['user_id']); ?></th>
+                <td><?php echo htmlspecialchars($user['username']); ?></td>
+                <td><?php echo htmlspecialchars($user['email']); ?></td>
+                <td><?php echo htmlspecialchars($user['address']); ?></td>
+                <td><?php echo htmlspecialchars($user['phone']); ?></td>
+                <td><?php echo htmlspecialchars($user['gender']); ?></td>
+                <td>
+                    <a href="detail.php?id=<?php echo htmlspecialchars($user['user_id']); ?>"
+                        class="btn btn-primary">Detail</a>
+                    <a href="update.php?id=<?php echo htmlspecialchars($user['user_id']); ?>"
+                        class="btn btn-warning">Update</a>
+                    <a href="index.php?action=delete&id=<?php echo htmlspecialchars($user['user_id']); ?>"
+                        class="btn btn-danger" onclick="return confirm('Are you sure want to delete this user?')">Delete</a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
     </tbody>
 </table>
 
