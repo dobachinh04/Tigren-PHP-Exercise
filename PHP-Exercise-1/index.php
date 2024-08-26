@@ -20,9 +20,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
 <?php include('layouts/header.php'); ?>
 
 <h1 class="text-center">User Management</h1>
-<a href="create.php" class="btn btn-success">Create New User</a>
+<a href="create.php" class="btn btn-success mb-3">Create New User</a>
 
-<table class="table">
+<table class="table table-bordered table-hover">
     <thead>
         <tr>
             <th scope="col">ID</th>
